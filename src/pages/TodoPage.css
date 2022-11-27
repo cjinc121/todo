@@ -1,0 +1,134 @@
+.main{
+    height:100vh;
+    background:#D6E4E5;
+    margin:0;
+    padding: 20px;
+}
+.card{
+    border-radius: 8px;
+    margin:auto ;
+    height:80vh;
+    width:40%;
+    overflow-y: scroll;
+    background: #EFF5F5;
+    position: relative;
+
+}
+.checkbox{
+  float: left;
+}
+.image-container{
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+.image{
+    height: 40px;
+    width: 40px;
+    margin:auto;
+}
+.tab-container{
+    display: flex;
+}
+.tab-active{
+    border-bottom: 3px solid blue;
+color:blue;
+}
+.tab:focus{
+    border-bottom: 3px solid blue;
+color:blue;
+}
+.tab{
+    width:50%;
+    text-align:center;
+    background: #fff;
+    padding: 20px 0;
+    cursor:pointer;
+}
+.todo-container{
+    display: flex;
+    flex-direction: column;
+gap:10px;
+padding:10px;
+
+}
+.todo-card{
+    border-radius: 4px;
+    background: #BCCEF8;
+    padding:10px;
+display:flex;
+justify-content: space-between;
+align-items: center;
+
+}
+.edit-delete{
+display: flex;
+gap:20px;
+color:blue
+}
+.add{
+  position:absolute;
+  bottom: 10px;
+  right:45%;
+  color:blue;
+  background: #fff;
+  border-radius: 50%;
+  padding:10px;  
+}
+.modal-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    opacity: 1;
+    z-index:1;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.4);
+  }
+  
+  .modal-box {
+   width: 35%;
+    height: max-content;
+    padding: 1rem;
+    cursor: default;
+  }
+  @media only screen and (max-width: 500px){
+    .card{
+      width:90%
+    }
+    .modal-box{
+     
+    width:80%;
+    }
+      .add-card{
+        width: 90%;
+         
+        
+      }
+
+    }
+  .add-card{
+    background: #fff;
+    padding:20px;
+    border-radius: 8px;
+
+  }
+  .add-card>input{
+    border-radius: 10px;
+    font-size: large;
+    padding:10px;
+    border:2px solid blue;
+    width: 90%;
+  }
+  .okay{
+    width: max-content;
+    color:blue;
+  background: #D6E4E5;
+  border-radius: 50%;
+  padding:10px;  
+  margin: auto;
+  margin-top: 20px;
+  }
