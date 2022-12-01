@@ -1,24 +1,25 @@
-import './TodoPage.css';
+import containerStyles from './TodoPage.module.css';
 import Todo from '../assets/todo.png';
-import { AiTwotoneDelete } from 'react-icons/ai';
-import { FiEdit2 } from 'react-icons/fi';
 import { RiAddLine } from 'react-icons/ri';
-import { FiCornerDownRight } from 'react-icons/fi';
 import { useEffect, useState } from 'react';
 import uuid from 'react-uuid';
+import { ModalCard } from '../components/modal-card/ModalCard';
+import { TodoCard } from '../components/todo-card/TodoCard';
 
 export const TodoPage = () => {
-  const [addTodo, setAddTodo] = useState(false);
-  const [editTodo, setEditTodo] = useState({ edit: false });
+  const [showAddTodoModal, setShowAddTodoModal] = useState(false);
+  const [showEditTodoModal, setshowEditTodoModal] = useState(false);
+  const [editId, setEditId] = useState('');
   const [todoList, setTodoList] = useState([]);
-  const [tabStatus, setTabStatus] = useState('ALL');
+  const [selectedtabStatus, setSelectedtabStatus] = useState('ALL');
   const [text, setText] = useState('');
-  const add = (value) => {
+
+  const addTodo = (value) => {
     const newTodolist = [...todoList, { id: uuid(), title: value, status: 'pending' }];
     setTodoList(newTodolist);
     localStorage.setItem('TODO_LIST', JSON.stringify(newTodolist));
   };
-  const edit = (id, value) => {
+  const editTodo = (id, value) => {
     const newTodoList = [...todoList];
     for (let i = 0; i < newTodoList.length; i++) {
       if (newTodoList[i].id === id) {
@@ -38,7 +39,6 @@ export const TodoPage = () => {
       }
     }
     setTodoList(newTodoList);
-    console.log(todoList);
     localStorage.setItem('TODO_LIST', JSON.stringify(newTodoList));
   };
   const deleteTodo = (id) => {
@@ -53,149 +53,90 @@ export const TodoPage = () => {
   }, []);
 
   return (
-    <div className="main">
-      <div className="card">
-        <div className="image-container">
-          <img src={Todo} alt="todo" className="image" />
-        </div>
-        <div className="tab-container">
-          <div
-            className={tabStatus === 'ALL' ? 'tab tab-active' : 'tab'}
-            onClick={() => setTabStatus('ALL')}
-          >
-            {' '}
-            All
+    <div className={containerStyles.main}>
+      <div className={containerStyles.card}>
+        <div className={containerStyles.topCard}>
+          <div className={containerStyles.imageContainer}>
+            <img src={Todo} alt="todo" className={containerStyles.image} />
           </div>
-          <div
-            className={tabStatus === 'DONE' ? 'tab tab-active' : 'tab'}
-            onClick={() => setTabStatus('DONE')}
-          >
-            Done
+          <div className={containerStyles.tabContainer}>
+            <div
+              className={
+                selectedtabStatus === 'ALL'
+                  ? `${containerStyles.tab} ${containerStyles.tabActive} `
+                  : `${containerStyles.tab}`
+              }
+              onClick={() => setSelectedtabStatus('ALL')}
+            >
+              {' '}
+              All
+            </div>
+            <div
+              className={
+                selectedtabStatus === 'DONE'
+                  ? `${containerStyles.tab} ${containerStyles.tabActive} `
+                  : `${containerStyles.tab}`
+              }
+              onClick={() => setSelectedtabStatus('DONE')}
+            >
+              Done
+            </div>
           </div>
         </div>
-        <div className="todo-container">
-          {todoList &&
-            tabStatus === 'ALL' &&
-            todoList.map((item) => {
-              return (
-                <div className="todo-card">
-                  <div className="checkbox">
-                    <input
-                      type="checkbox"
-                      checked={item.status === 'complete'}
-                      onChange={() => editStatus(item.id)}
-                    />
-                  </div>
-
-                  <div>{item.status === 'pending' ? item.title : <s>{item.title}</s>}</div>
-                  <div className="edit-delete">
-                    <div>
-                      <FiEdit2
-                        size={20}
-                        onClick={() => {
-                          setEditTodo({ edit: true, id: item.id });
-                          setText(item.title);
-                        }}
-                      />
-                    </div>
-                    <div onClick={() => deleteTodo(item.id)}>
-                      <AiTwotoneDelete size={20} />
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          {todoList &&
-            tabStatus === 'DONE' &&
-            todoList.map((item) => {
-              if (item.status === 'complete')
+        <div className={containerStyles.todoWrapper}>
+          <div className={containerStyles.todoContainer}>
+            {todoList &&
+              selectedtabStatus === 'ALL' &&
+              todoList.map((item) => {
                 return (
-                  <div className="todo-card">
-                    <div className="checkbox">
-                      <input
-                        type="checkbox"
-                        checked={item.status === 'complete'}
-                        onChange={() => editStatus(item.id)}
-                      />
-                    </div>
-
-                    <div>{item.status === 'pending' ? item.title : <s>{item.title}</s>}</div>
-                    <div className="edit-delete">
-                      <div>
-                        <FiEdit2
-                          size={20}
-                          onClick={() => {
-                            setEditTodo({ edit: true, id: item.id });
-                            setText(item.title);
-                          }}
-                        />
-                      </div>
-                      <div onClick={() => deleteTodo(item.id)}>
-                        <AiTwotoneDelete size={20} />
-                      </div>
-                    </div>
-                  </div>
+                  <TodoCard
+                    item={item}
+                    editStatus={editStatus}
+                    setshowEditTodoModal={setshowEditTodoModal}
+                    setEditId={setEditId}
+                    setText={setText}
+                    deleteTodo={deleteTodo}
+                  />
                 );
-            })}
-          <div className="add" onClick={() => setAddTodo(true)}>
-            <RiAddLine size={40} />
-          </div>
+              })}
 
-          {addTodo && (
-            <div
-              className="modal-page"
-              onClick={() => {
-                setAddTodo(false);
-              }}
-            >
-              <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-                <div className="add-card">
-                  <h3>Add new Todo</h3>
-                  <label>Title :</label>
-                  <br />
-                  <input type="text" value={text} onChange={(e) => setText(e.target.value)} />
-                  <div
-                    className="okay"
-                    onClick={() => {
-                      add(text);
-                      setText('');
-                      setAddTodo(false);
-                    }}
-                  >
-                    <FiCornerDownRight size={20} />
-                  </div>
-                </div>
-              </div>
+            {todoList &&
+              selectedtabStatus === 'DONE' &&
+              todoList.map((item) => {
+                if (item.status === 'complete')
+                  return (
+                    <TodoCard
+                      item={item}
+                      editStatus={editStatus}
+                      setshowEditTodoModal={setshowEditTodoModal}
+                      setEditId={setEditId}
+                      setText={setText}
+                      deleteTodo={deleteTodo}
+                    />
+                  );
+              })}
+            <div className={containerStyles.add} onClick={() => setShowAddTodoModal(true)}>
+              <RiAddLine size={40} />
             </div>
-          )}
-          {editTodo.edit && (
-            <div
-              className="modal-page"
-              onClick={() => {
-                setEditTodo({ edit: false });
-              }}
-            >
-              <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-                <div className="add-card">
-                  <h3>Edit Todo</h3>
-                  <label>Title :</label>
-                  <br />
-                  <input type="text" value={text} onChange={(e) => setText(e.target.value)} />
-                  <div
-                    className="okay"
-                    onClick={() => {
-                      console.log('hi');
-                      edit(editTodo.id, text);
-                      setText('');
-                      setEditTodo({ edit: false });
-                    }}
-                  >
-                    <FiCornerDownRight size={20} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+
+            {showAddTodoModal && (
+              <ModalCard
+                setActionTodo={setShowAddTodoModal}
+                text={text}
+                setText={setText}
+                action={addTodo}
+              />
+            )}
+            {showEditTodoModal && (
+              <ModalCard
+                setActionTodo={setshowEditTodoModal}
+                text={text}
+                setText={setText}
+                action={editTodo}
+                editId={editId}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>
